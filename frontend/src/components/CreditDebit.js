@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const CreditDebit = () => {
-    const [accountNumber, setAccountNumber] = useState('');
-    const [amount, setAmount] = useState('');
-    const [transactionType, setTransactionType] = useState('credit');
-    const [resultMessage, setResultMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [accountNumber, setAccountNumber] = useState('');  // Account Number
+    const [amount, setAmount] = useState('');  // Transaction Amount
+    const [transactionType, setTransactionType] = useState('credit');  // Credit/Debit Selection
+    const [startDate, setStartDate] = useState('');  // Start Date for Bank Statement
+    const [endDate, setEndDate] = useState('');  // End Date for Bank Statement
+    const [resultMessage, setResultMessage] = useState('');  // Success Message
+    const [errorMessage, setErrorMessage] = useState('');  // Error Message
 
     // Handle form submission for credit and debit
     const handleSubmit = async (e) => {
@@ -34,13 +36,42 @@ const CreditDebit = () => {
         }
     };
 
+    // Function to request a bank statement
+    const generateStatement = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/transactions/bankstatement`, {
+                params: {
+                    accountNumber,
+                    startDate,
+                    endDate,
+                },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                responseType: 'blob',  // Get the PDF file as a blob
+            });
+
+            // Create a URL for the blob and trigger a download
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'BankStatement.pdf');  // Define the file name
+            document.body.appendChild(link);
+            link.click();
+        } catch (error) {
+            setErrorMessage('Failed to generate bank statement. Please try again.');
+        }
+    };
+
     return (
         <div className="container mt-5">
             <h2 className="text-center">Credit / Debit Account</h2>
 
+            {/* Display success or error messages */}
             {resultMessage && <div className="alert alert-success">{resultMessage}</div>}
             {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
+            {/* Credit/Debit Form */}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="accountNumber">Account Number</label>
@@ -83,8 +114,40 @@ const CreditDebit = () => {
                     Submit Transaction
                 </button>
             </form>
+
+            <hr />
+
+            {/* Generate Bank Statement Form */}
+            <h3 className="text-center mt-4">Generate Bank Statement</h3>
+
+            <div className="form-group">
+                <label htmlFor="startDate">Start Date</label>
+                <input
+                    type="date"
+                    className="form-control"
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                />
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="endDate">End Date</label>
+                <input
+                    type="date"
+                    className="form-control"
+                    id="endDate"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                />
+            </div>
+
+            <button onClick={generateStatement} className="btn btn-info btn-block">
+                Generate Statement
+            </button>
         </div>
     );
 };
 
 export default CreditDebit;
+

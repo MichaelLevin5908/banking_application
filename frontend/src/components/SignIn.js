@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';  // Import Link component
 import './App.css';
 
 const SignIn = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -12,7 +13,7 @@ const SignIn = () => {
 
         try {
             const response = await axios.post('http://localhost:8080/api/auth/signin', {
-                username,
+                email,
                 password
             });
 
@@ -22,7 +23,7 @@ const SignIn = () => {
             // Redirect to another page (e.g., dashboard)
             window.location.href = '/dashboard';
         } catch (error) {
-            setErrorMessage('Invalid username or password');
+            setErrorMessage('Invalid email or password');
         }
     };
 
@@ -32,11 +33,11 @@ const SignIn = () => {
             {errorMessage && <p className="error">{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Username</label>
+                    <label>Email</label>
                     <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
@@ -51,8 +52,10 @@ const SignIn = () => {
                 </div>
                 <button type="submit">Sign In</button>
             </form>
+            <p>Don't have an account? <Link to="/signup">Create an account</Link></p>
         </div>
     );
 };
 
 export default SignIn;
+
