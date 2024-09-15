@@ -86,23 +86,25 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public BankResponse login(loginDto loginDto)
-    {
-        Authentication authentication;
-        authentication = authenticationManager.authenticate(
+    public BankResponse login(loginDto loginDto) {
+        // Authenticate the user using AuthenticationManager
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
         );
 
+        // Send login email alert
         EmailDetails loginAlert = EmailDetails.builder()
                 .subject("You are logged in")
                 .recipient(loginDto.getEmail())
-                .body("You have logged into your account. If you did not initiate this request. Do not start")
+                .body("You have logged into your account. If you did not initiate this request, please secure your account.")
                 .build();
         emailService.sendEmail(loginAlert);
 
+        // Return response with JWT token
         return BankResponse.builder()
-                .responseCode("Login Success")
-                .responseMessage(jwtTokenProvider.generateToken(authentication))
+                .responseCode("200")  // Use HTTP 200-like code for successful login
+                .responseMessage("Login Success")
+                .responseMessage(jwtTokenProvider.generateToken(authentication))  // Send JWT token
                 .build();
     }
 
