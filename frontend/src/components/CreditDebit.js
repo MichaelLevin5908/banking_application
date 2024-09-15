@@ -13,6 +13,8 @@ const CreditDebit = () => {
     // Handle form submission for credit and debit
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setResultMessage('');
+        setErrorMessage('');
 
         try {
             const response = await axios.post(
@@ -29,15 +31,22 @@ const CreditDebit = () => {
             );
 
             setResultMessage(`${transactionType.toUpperCase()} successful!`);
-            setErrorMessage('');
+            setAmount('');  // Clear amount input after successful transaction
         } catch (error) {
             setErrorMessage('Transaction failed. Please try again.');
-            setResultMessage('');
         }
     };
 
     // Function to request a bank statement
-    const generateStatement = async () => {
+    const generateStatement = async (e) => {
+        e.preventDefault();
+        setErrorMessage('');
+
+        if (!accountNumber || !startDate || !endDate) {
+            setErrorMessage('Please provide account number, start date, and end date.');
+            return;
+        }
+
         try {
             const response = await axios.get(`http://localhost:8080/api/transactions/bankstatement`, {
                 params: {
@@ -120,34 +129,39 @@ const CreditDebit = () => {
             {/* Generate Bank Statement Form */}
             <h3 className="text-center mt-4">Generate Bank Statement</h3>
 
-            <div className="form-group">
-                <label htmlFor="startDate">Start Date</label>
-                <input
-                    type="date"
-                    className="form-control"
-                    id="startDate"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                />
-            </div>
+            <form onSubmit={generateStatement}>
+                <div className="form-group">
+                    <label htmlFor="startDate">Start Date</label>
+                    <input
+                        type="date"
+                        className="form-control"
+                        id="startDate"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        required
+                    />
+                </div>
 
-            <div className="form-group">
-                <label htmlFor="endDate">End Date</label>
-                <input
-                    type="date"
-                    className="form-control"
-                    id="endDate"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                />
-            </div>
+                <div className="form-group">
+                    <label htmlFor="endDate">End Date</label>
+                    <input
+                        type="date"
+                        className="form-control"
+                        id="endDate"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        required
+                    />
+                </div>
 
-            <button onClick={generateStatement} className="btn btn-info btn-block">
-                Generate Statement
-            </button>
+                <button type="submit" className="btn btn-info btn-block">
+                    Generate Statement
+                </button>
+            </form>
         </div>
     );
 };
 
 export default CreditDebit;
+
 
