@@ -40,7 +40,7 @@ const SignUp = () => {
         }
 
         try {
-            await axios.post('http://localhost:8080/api/user/createaccount', {
+            await axios.post('http://localhost:8080/api/user/createAccount', {
                 firstName,
                 lastName,
                 email,
