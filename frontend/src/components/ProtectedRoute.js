@@ -1,6 +1,5 @@
 import React from 'react';
-import { Route, Navigate } from 'react-router-dom'; // For React Router v6
-
+import { Navigate } from 'react-router-dom'; // For React Router v6
 
 // Helper function to check if the user is authenticated
 const isAuthenticated = () => {
@@ -16,19 +15,8 @@ const isAuthenticated = () => {
 };
 
 // Higher-order component to protect routes
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-    return (
-        <Route
-            {...rest}
-            render={(props) =>
-                isAuthenticated() ? ( // Call the helper function
-                    <Component {...props} />
-                ) : (
-                    <Navigate to="/signin" />
-                )
-            }
-        />
-    );
+const ProtectedRoute = ({ element: Element }) => {
+    return isAuthenticated() ? <Element /> : <Navigate to="/signin" />;
 };
 
 export default ProtectedRoute;
