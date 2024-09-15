@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService{
 
     public BankResponse login(loginDto loginDto)
     {
-        Authentication authentication = null;
+        Authentication authentication;
         authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
         );
@@ -216,10 +216,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public BankResponse transfer(TransferRequest request){
-        boolean isSourceAccountExist = userRepository.existsByAccountNumber(request.getSourceAccountNumber());
+    public BankResponse transfer(TransferRequest request) {
         boolean isDestinationAccountExist = userRepository.existsByAccountNumber(request.getDestinationAccountNumber());
-        if(!isDestinationAccountExist){
+        if (!isDestinationAccountExist) {
             return BankResponse.builder()
                     .responseCode(AccountUtils.ACCOUNT_NOT_EXIST_CODE)
                     .responseMessage(AccountUtils.ACCOUNT_NOT_EXIST_MESSAGE)
@@ -228,19 +227,23 @@ public class UserServiceImpl implements UserService{
         }
 
         User sourceAccount = userRepository.findByAccountNumber(request.getSourceAccountNumber());
-        if (request.getAmount().compareTo(sourceAccount.getAccountBalance()) < 0)
-        {
+        if (request.getAmount().compareTo(sourceAccount.getAccountBalance()) < 0) {
             return BankResponse.builder()
                     .responseCode(AccountUtils.INSUFFICIENT_BALANCE_CODE)
                     .responseMessage(AccountUtils.INSUFFICIENT_BALANCE_MESSAGE)
                     .accountInfo(null)
                     .build();
         }
-        String sourceUsername = sourceAccount.getFirstName() + " " + sourceAccount.getLastName() + " " + sourceAccount.getOtherName();
-        sourceAccount.setAccountBalance(sourceAccount.getAccountBalance().subtract(request.getAmount()));
 
+        // Construct source username
+        String sourceUsername = sourceAccount.getFirstName() + " " + sourceAccount.getLastName()
+                + (sourceAccount.getOtherName() != null ? " " + sourceAccount.getOtherName() : "");
+
+        // Update source account balance
+        sourceAccount.setAccountBalance(sourceAccount.getAccountBalance().subtract(request.getAmount()));
         userRepository.save(sourceAccount);
 
+        // Log transaction for source account (DEBIT)
         TransactionDto transactionDto = TransactionDto.builder()
                 .accountNumber(sourceAccount.getAccountNumber())
                 .transactionType("DEBIT")
@@ -248,17 +251,21 @@ public class UserServiceImpl implements UserService{
                 .build();
         transactionService.saveTransaction(transactionDto);
 
+        // Send debit alert email
         EmailDetails debitAlert = EmailDetails.builder()
                 .subject("DEBIT ALERT")
                 .recipient(sourceAccount.getEmail())
-                .body("The sum of " + request.getAmount() + "has been deducted from your account" + sourceAccount.getAccountBalance())
+                .body("Dear " + sourceUsername + ",\n\nThe sum of " + request.getAmount() +
+                        " has been deducted from your account. Your new balance is " + sourceAccount.getAccountBalance() + ".")
                 .build();
         emailService.sendEmail(debitAlert);
 
+        // Update destination account balance
         User destinationAccount = userRepository.findByAccountNumber(request.getDestinationAccountNumber());
         destinationAccount.setAccountBalance(destinationAccount.getAccountBalance().add(request.getAmount()));
         userRepository.save(destinationAccount);
 
+        // Log transaction for destination account (CREDIT)
         TransactionDto creditTransactionDto = TransactionDto.builder()
                 .accountNumber(destinationAccount.getAccountNumber())
                 .transactionType("CREDIT")
@@ -266,13 +273,14 @@ public class UserServiceImpl implements UserService{
                 .build();
         transactionService.saveTransaction(creditTransactionDto);
 
+        // Send credit alert email
         EmailDetails creditAlert = EmailDetails.builder()
                 .subject("CREDIT ALERT")
-                .recipient(sourceAccount.getEmail())
-                .body("The sum of " + request.getAmount() + "has been added from your account" + sourceAccount.getAccountBalance())
+                .recipient(destinationAccount.getEmail())
+                .body("Dear " + sourceUsername + ",\n\nThe sum of " + request.getAmount() +
+                        " has been added to your account. Your new balance is " + destinationAccount.getAccountBalance() + ".")
                 .build();
         emailService.sendEmail(creditAlert);
-
 
         return BankResponse.builder()
                 .responseCode(AccountUtils.TRANSFER_SUCCESSFUL_CODE)
@@ -280,7 +288,6 @@ public class UserServiceImpl implements UserService{
                 .accountInfo(null)
                 .build();
     }
-
     public static void main(String[] args) {
         UserServiceImpl userService = new UserServiceImpl();
         System.out.println(userService.passwordEncoder.encode("1234"));
