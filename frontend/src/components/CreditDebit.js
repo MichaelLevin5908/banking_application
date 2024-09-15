@@ -1,21 +1,36 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+import { Card, Form, Button, Col, Row, Alert } from 'react-bootstrap';
 import axios from 'axios';
-import '../Style/Creditdebit.css';
 
-const CreditDebit = () => {
-    const [accountNumber, setAccountNumber] = useState('');  // Account Number
-    const [amount, setAmount] = useState('');  // Transaction Amount
-    const [transactionType, setTransactionType] = useState('credit');  // Credit/Debit Selection
-    const [startDate, setStartDate] = useState('');  // Start Date for Bank Statement
-    const [endDate, setEndDate] = useState('');  // End Date for Bank Statement
-    const [resultMessage, setResultMessage] = useState('');  // Success Message
-    const [errorMessage, setErrorMessage] = useState('');  // Error Message
+export default class CreditDebit extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            accountNumber: '',
+            amount: '',
+            transactionType: 'credit',
+            startDate: '',
+            endDate: '',
+            resultMessage: '',
+            errorMessage: ''
+        };
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.generateStatement = this.generateStatement.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    // Handle input changes
+    handleChange(event) {
+        this.setState({ [event.target.name]: event.target.value });
+    }
 
     // Handle form submission for credit and debit
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setResultMessage('');
-        setErrorMessage('');
+    async handleSubmit(event) {
+        event.preventDefault();
+        this.setState({ resultMessage: '', errorMessage: '' });
+
+        const { accountNumber, amount, transactionType } = this.state;
 
         try {
             const response = await axios.post(
@@ -31,20 +46,20 @@ const CreditDebit = () => {
                 }
             );
 
-            setResultMessage(`${transactionType.toUpperCase()} successful!`);
-            setAmount('');  // Clear amount input after successful transaction
+            this.setState({ resultMessage: `${transactionType.toUpperCase()} successful!`, amount: '' });
         } catch (error) {
-            setErrorMessage('Transaction failed. Please try again.');
+            this.setState({ errorMessage: 'Transaction failed. Please try again.' });
         }
-    };
+    }
 
     // Function to request a bank statement
-    const generateStatement = async (e) => {
-        e.preventDefault();
-        setErrorMessage('');
+    async generateStatement(event) {
+        event.preventDefault();
+        const { accountNumber, startDate, endDate } = this.state;
+        this.setState({ errorMessage: '' });
 
         if (!accountNumber || !startDate || !endDate) {
-            setErrorMessage('Please provide account number, start date, and end date.');
+            this.setState({ errorMessage: 'Please provide account number, start date, and end date.' });
             return;
         }
 
@@ -58,111 +73,125 @@ const CreditDebit = () => {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
-                responseType: 'blob',  // Get the PDF file as a blob
+                responseType: 'blob',
             });
 
             // Create a URL for the blob and trigger a download
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'BankStatement.pdf');  // Define the file name
+            link.setAttribute('download', 'BankStatement.pdf');
             document.body.appendChild(link);
             link.click();
         } catch (error) {
-            setErrorMessage('Failed to generate bank statement. Please try again.');
+            this.setState({ errorMessage: 'Failed to generate bank statement. Please try again.' });
         }
-    };
+    }
 
-    return (
-        <div className="container mt-5">
-            <h2 className="text-center">Credit / Debit Account</h2>
+    render() {
+        const { accountNumber, amount, transactionType, startDate, endDate, resultMessage, errorMessage } = this.state;
 
-            {/* Display success or error messages */}
-            {resultMessage && <div className="alert alert-success">{resultMessage}</div>}
-            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+        return (
+            <Card className="border border-dark bg-dark text-white mt-5">
+                <Card.Header className="text-center">Credit / Debit Account</Card.Header>
+                <Form onSubmit={this.handleSubmit}>
+                    <Card.Body>
+                        {resultMessage && <Alert variant="success" className="text-center">{resultMessage}</Alert>}
+                        {errorMessage && <Alert variant="danger" className="text-center">{errorMessage}</Alert>}
 
-            {/* Credit/Debit Form */}
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="accountNumber">Account Number</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="accountNumber"
-                        value={accountNumber}
-                        onChange={(e) => setAccountNumber(e.target.value)}
-                        required
-                    />
-                </div>
+                        <Row className="mb-3">
+                            <Form.Label column={"sm"} sm={3}>Account Number</Form.Label>
+                            <Col sm={9}>
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    name="accountNumber"
+                                    value={accountNumber}
+                                    onChange={this.handleChange}
+                                    className="bg-dark text-white"
+                                    placeholder="Enter Account Number"
+                                />
+                            </Col>
+                        </Row>
 
-                <div className="form-group">
-                    <label htmlFor="amount">Amount</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        id="amount"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        required
-                    />
-                </div>
+                        <Row className="mb-3">
+                            <Form.Label column={"sm"} sm={3}>Amount</Form.Label>
+                            <Col sm={9}>
+                                <Form.Control
+                                    required
+                                    type="number"
+                                    name="amount"
+                                    value={amount}
+                                    onChange={this.handleChange}
+                                    className="bg-dark text-white"
+                                    placeholder="Enter Amount"
+                                />
+                            </Col>
+                        </Row>
 
-                <div className="form-group">
-                    <label htmlFor="transactionType">Transaction Type</label>
-                    <select
-                        id="transactionType"
-                        className="form-control"
-                        value={transactionType}
-                        onChange={(e) => setTransactionType(e.target.value)}
-                    >
-                        <option value="credit">Credit</option>
-                        <option value="debit">Debit</option>
-                    </select>
-                </div>
+                        <Row className="mb-3">
+                            <Form.Label column={"sm"} sm={3}>Transaction Type</Form.Label>
+                            <Col sm={9}>
+                                <Form.Select
+                                    name="transactionType"
+                                    value={transactionType}
+                                    onChange={this.handleChange}
+                                    className="bg-dark text-white"
+                                >
+                                    <option value="credit">Credit</option>
+                                    <option value="debit">Debit</option>
+                                </Form.Select>
+                            </Col>
+                        </Row>
+                    </Card.Body>
+                    <Card.Footer style={{ textAlign: "right" }}>
+                        <Button size="sm" variant="success" type="submit">
+                            Submit Transaction
+                        </Button>
+                    </Card.Footer>
+                </Form>
 
-                <button type="submit" className="btn btn-primary btn-block">
-                    Submit Transaction
-                </button>
-            </form>
+                <hr className="my-4" />
 
-            <hr />
+                {/* Generate Bank Statement Form */}
+                <Card.Header className="text-center">Generate Bank Statement</Card.Header>
+                <Form onSubmit={this.generateStatement}>
+                    <Card.Body>
+                        <Row className="mb-3">
+                            <Form.Label column={"sm"} sm={3}>Start Date</Form.Label>
+                            <Col sm={9}>
+                                <Form.Control
+                                    required
+                                    type="date"
+                                    name="startDate"
+                                    value={startDate}
+                                    onChange={this.handleChange}
+                                    className="bg-dark text-white"
+                                />
+                            </Col>
+                        </Row>
 
-            {/* Generate Bank Statement Form */}
-            <h3 className="text-center mt-4">Generate Bank Statement</h3>
-
-            <form onSubmit={generateStatement}>
-                <div className="form-group">
-                    <label htmlFor="startDate">Start Date</label>
-                    <input
-                        type="date"
-                        className="form-control"
-                        id="startDate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="endDate">End Date</label>
-                    <input
-                        type="date"
-                        className="form-control"
-                        id="endDate"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <button type="submit" className="btn btn-info btn-block">
-                    Generate Statement
-                </button>
-            </form>
-        </div>
-    );
-};
-
-export default CreditDebit;
-
-
+                        <Row className="mb-3">
+                            <Form.Label column={"sm"} sm={3}>End Date</Form.Label>
+                            <Col sm={9}>
+                                <Form.Control
+                                    required
+                                    type="date"
+                                    name="endDate"
+                                    value={endDate}
+                                    onChange={this.handleChange}
+                                    className="bg-dark text-white"
+                                />
+                            </Col>
+                        </Row>
+                    </Card.Body>
+                    <Card.Footer style={{ textAlign: "right" }}>
+                        <Button size="sm" variant="info" type="submit">
+                            Generate Statement
+                        </Button>
+                    </Card.Footer>
+                </Form>
+            </Card>
+        );
+    }
+}

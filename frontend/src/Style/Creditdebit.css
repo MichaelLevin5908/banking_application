@@ -5,7 +5,7 @@
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f8f9fa; /* Light background for contrast */
+    background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -14,11 +14,12 @@
 h2, h3 {
     text-align: center;
     color: #343a40;
+    margin-bottom: 20px;
 }
 
 /* Form field styling */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* Increased spacing for consistency */
 }
 
 .form-control {
@@ -26,11 +27,13 @@ h2, h3 {
     border-radius: 4px;
     padding: 10px;
     font-size: 1rem;
+    background-color: #fff;
 }
 
 label {
     font-weight: bold;
     color: #495057;
+    display: block; /* Ensure labels are on their own line */
 }
 
 /* Button styling */
@@ -38,6 +41,7 @@ label {
     padding: 10px 15px;
     font-size: 1.1rem;
     border-radius: 5px;
+    transition: background-color 0.3s ease; /* Add smooth transition */
 }
 
 .btn-primary {
@@ -45,15 +49,23 @@ label {
     border: none;
 }
 
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
 .btn-info {
     background-color: #17a2b8;
     border: none;
 }
 
+.btn-info:hover {
+    background-color: #138496; /* Darker shade on hover */
+}
+
 /* Alert messages */
 .alert {
     font-size: 1rem;
-    padding: 10px;
+    padding: 12px;
     border-radius: 4px;
     margin-top: 20px;
 }
@@ -72,10 +84,23 @@ label {
 
 /* Add some margin between forms */
 form {
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 /* Additional button styling for consistency */
 button.btn-block {
     width: 100%;
+}
+
+/* Responsive form adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    h2, h3 {
+        font-size: 1.5rem;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
 }
