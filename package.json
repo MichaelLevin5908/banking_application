@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "jwt-decode": "^4.0.0",
+    "react-bootstrap": "^2.10.4",
+    "react-router-dom": "^6.26.2"
+  }
+}
