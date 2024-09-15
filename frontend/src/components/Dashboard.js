@@ -9,18 +9,17 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchBalance = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/User/accountBalance', {
+                const response = await axios.get('http://localhost:8080/api/user/balanceEnquiry', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
 
-                setAccountBalance(parseFloat(response.data.accountBalance));
+                setAccountBalance(parseFloat(response.data.accountInfo.accountBalance));
             } catch (error) {
                 setErrorMessage('Failed to fetch account balance.');
             }
         };
-
         fetchBalance();
     }, []);
 
