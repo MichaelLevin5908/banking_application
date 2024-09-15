@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService{
     EmailDetails emailDetails = EmailDetails.builder()
             .recipient(savedUser.getEmail())
             .subject("ACCOUNT CREATION")
-            .body("Your account has been created\nYour Account Deatails:\nAccount Name:" + "\nAccount number: "+ savedUser.getAccountNumber())
+            .body("Your account has been created\nYour Account Details:\nAccount Name:" + "\nAccount number: "+ savedUser.getAccountNumber())
             .build();
 
     emailService.sendEmail(emailDetails);
