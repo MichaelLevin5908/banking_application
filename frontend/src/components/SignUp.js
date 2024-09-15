@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../App.css';  // Assuming you want to reuse the same CSS styles
+import '../Style/signup.css';// Assuming you want to reuse the same CSS styles
 
 const SignUp = () => {
     const [firstName, setFirstName] = useState('');  // First name
