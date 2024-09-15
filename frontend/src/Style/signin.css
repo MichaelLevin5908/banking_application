@@ -1,0 +1,93 @@
+/* SignIn.css */
+
+/* Container for the SignIn form */
+.SignIn-container {
+    max-width: 400px;
+    margin: 0 auto; /* Center the form horizontally */
+    padding: 20px;
+    background-color: #f8f9fa; /* Light grey background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin-top: 60px;
+}
+
+/* Form heading */
+.SignIn-container h2 {
+    text-align: center;
+    color: #343a40; /* Dark grey text color */
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+/* Labels for the form fields */
+.SignIn-container label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #495057; /* Dark grey for labels */
+    font-weight: 600; /* Make labels bold */
+}
+
+/* Input fields */
+.SignIn-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    background-color: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+/* Input fields focus state */
+.SignIn-container input:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+/* Submit button */
+.SignIn-container button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.SignIn-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Success and error messages */
+.error {
+    color: #dc3545; /* Red text for errors */
+    background-color: #f8d7da;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c6cb;
+    text-align: center;
+}
+
+/* Link to sign-up page */
+.SignIn-container p {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.SignIn-container p a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.SignIn-container p a:hover {
+    text-decoration: underline;
+}
