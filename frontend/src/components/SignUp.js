@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../Style/signup.css';// Assuming you want to reuse the same CSS styles
+import '../Style/signup.css';
+import {Link} from "react-router-dom";
+// Assuming you want to reuse the same CSS styles
 
 const SignUp = () => {
     const [firstName, setFirstName] = useState('');  // First name
@@ -21,7 +23,7 @@ const SignUp = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/signup', {
+            const response = await axios.post('http://localhost:8080/api/user/createaccount', {
                 firstName,
                 lastName,
                 email,
@@ -99,6 +101,7 @@ const SignUp = () => {
                 </div>
                 <button type="submit">Create Account</button>
             </form>
+            <p>Have have an account please sign in? <Link to="/signin">Sign in</Link></p>
         </div>
     );
 };
