@@ -9,23 +9,38 @@ const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [gender, setGender] = useState(''); // Added gender field
-    const [address, setAddress] = useState(''); // Added address field
-    const [phoneNumber, setPhoneNumber] = useState(''); // Added phoneNumber field
-    const [stateOfOrigin, setStateOfOrigin] = useState(''); // Added state of origin field
+    const [gender, setGender] = useState('');
+    const [address, setAddress] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [stateOfOrigin, setStateOfOrigin] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Reset messages and set loading state
+        setErrorMessage('');
+        setSuccessMessage('');
+        setLoading(true);
+
+        // Password validation
         if (password !== confirmPassword) {
+            setLoading(false);
             setErrorMessage('Passwords do not match!');
             return;
         }
 
+        // Optional: Add other field validations if necessary
+        if (!validateEmail(email)) {
+            setLoading(false);
+            setErrorMessage('Invalid email address.');
+            return;
+        }
+
         try {
-            const response = await axios.post('http://localhost:8080/api/user/createaccount', {
+            await axios.post('http://localhost:8080/api/user/createaccount', {
                 firstName,
                 lastName,
                 email,
@@ -36,24 +51,36 @@ const SignUp = () => {
                 stateOfOrigin,
             });
 
+            // If successful, set success message and reset form fields
             setSuccessMessage('Account created successfully! You can now sign in.');
-            setErrorMessage('');
             setFirstName('');
             setLastName('');
             setEmail('');
             setPassword('');
             setConfirmPassword('');
-            setGender(''); // Reset gender
-            setAddress(''); // Reset address
-            setPhoneNumber(''); // Reset phoneNumber
-            setStateOfOrigin(''); // Reset stateOfOrigin
+            setGender('');
+            setAddress('');
+            setPhoneNumber('');
+            setStateOfOrigin('');
 
+            // Optionally, redirect to sign-in after 2 seconds
             setTimeout(() => {
                 window.location.href = '/signin';
             }, 2000);
+
         } catch (error) {
+            // Handle error response
             setErrorMessage('Account creation failed. Please try again.');
+        } finally {
+            // Turn off the loading state
+            setLoading(false);
         }
+    };
+
+    // Optional: Email validation function
+    const validateEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
     };
 
     return (
@@ -107,7 +134,6 @@ const SignUp = () => {
                         required
                     />
                 </div>
-                {/* New input fields for gender, address, phone number, etc. */}
                 <div>
                     <label>Gender</label>
                     <select
@@ -148,7 +174,9 @@ const SignUp = () => {
                     />
                 </div>
 
-                <button type="submit">Create Account</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Creating Account...' : 'Create Account'}
+                </button>
             </form>
             <p>Already have an account? <Link to="/signin">Sign in</Link></p>
         </div>
@@ -156,4 +184,5 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
 
