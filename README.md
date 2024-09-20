@@ -1,4 +1,4 @@
-##Banking Application
+## Banking Application
 
 ![Banking App Logo](bankingapp.png)
 
