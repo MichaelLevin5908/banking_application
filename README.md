@@ -3,7 +3,7 @@
 ![Banking App Logo](bankingapp.png)
 
 ## Overview
-The **Banking Application** is a full-stack web application designed to handle essential banking functions, such as user authentication, transactions between users, and account management. The backend is built using Spring Boot and MySQL, while the frontend is developed with React. This guide will help you set up the application, configure the database, and run both the backend and frontend locally.
+The **Banking Application** is a full-stack web application designed to handle essential banking functions, such as user authentication, transactions between users, and account management. The backend is built using Spring Boot and MySQL, while the frontend is developed with React.
 
 ## Features
 - User Authentication
