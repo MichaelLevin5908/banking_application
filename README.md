@@ -2,6 +2,14 @@
 
 This guide will walk you through the steps to set up, install dependencies, and run the Banking Application using IntelliJ, MySQL, and React.
 
+##Features
+
+- User Authentication
+- Crediting and debiting users
+- formulating a cashflow statement
+- Transactions in-between users
+- Email security noftications
+
 ![Banking App Logo](bankingapp.png)
 
 ## Prerequisites
