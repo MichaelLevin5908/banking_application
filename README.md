@@ -2,6 +2,8 @@
 
 This guide will walk you through the steps to set up, install dependencies, and run the Banking Application using IntelliJ, MySQL, and React.
 
+![Banking App Logo](bankingapp.png)
+
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your machine:
