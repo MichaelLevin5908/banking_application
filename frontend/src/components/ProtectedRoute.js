@@ -1,6 +1,8 @@
+// src/components/ProtectedRoute.js
+
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // Named import
 
 const isAuthenticated = () => {
     const token = localStorage.getItem('token');
@@ -33,3 +35,4 @@ const ProtectedRoute = ({ children }) => {
 };
 
 export default ProtectedRoute;
+
