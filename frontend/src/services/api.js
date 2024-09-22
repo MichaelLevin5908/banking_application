@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status === 401) {
             // Handle unauthorized errors (e.g., redirect to login)
-            window.location.href = '/signin';
+            window.location.href = '/SignIn';
         }
         return Promise.reject(error);
     }
