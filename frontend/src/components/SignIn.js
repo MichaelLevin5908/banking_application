@@ -18,7 +18,9 @@ const SignIn = () => {
             });
 
             // Store the token in localStorage (or in HttpOnly cookies)
-            localStorage.setItem('token', response.data.token);
+            // localStorage.setItem('token', response.data.token);
+
+            axios.defaults.withCredentials = true;
 
             // Redirect to another page (e.g., dashboard)
             window.location.href = '/dashboard';
