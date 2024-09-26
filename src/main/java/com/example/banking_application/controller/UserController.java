@@ -26,7 +26,7 @@ public class UserController {
             description = "Http status 201 CREATED"
     )
 
-    @PostMapping
+    @PostMapping("/createAccount")
     public BankResponse createAccount(@RequestBody UserRequest userRequest) {
         return userService.createAccount(userRequest);
     }
