@@ -28,6 +28,15 @@
     font-weight: 600; /* Make labels bold */
 }
 
+/* Style for the SignIn logo */
+.signin-logo {
+    display: block;
+    margin: 0 auto 20px; /* Center the logo and add spacing below */
+    width: 150px; /* Adjust the width of the logo */
+    height: auto; /* Maintain aspect ratio */
+}
+
+
 /* Input fields */
 .signin-container input {
     width: 100%;
