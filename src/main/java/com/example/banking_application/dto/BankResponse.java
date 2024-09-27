@@ -17,4 +17,6 @@ public class BankResponse {
     private String responseMessage;
 
     private AccountInfo accountInfo;
+
+    private String token;
 }

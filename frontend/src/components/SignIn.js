@@ -1,6 +1,8 @@
+// src/components/SignIn.js
+
 import React, { useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';  // Import Link component
+import axios from '../services/api'; // Ensure this is your centralized Axios instance
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../Style/signin.css';
 
 const SignIn = () => {
@@ -8,21 +10,32 @@ const SignIn = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Retrieve the path the user attempted to access before being redirected to sign-in
+    const from = location.state?.from?.pathname || '/dashboard';
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8080/api/user/login', {
+            const response = await axios.post('/user/login', {
                 email,
                 password
             });
 
-            // Store the token in localStorage (or in HttpOnly cookies)
-            localStorage.setItem('token', response.data.token);
+            if (response.data && response.data.token) {
+                localStorage.setItem('token', response.data.token);
+            } else {
+                setErrorMessage('Authentication token not provided by server.');
+                return;
+            }
 
-            // Redirect to another page (e.g., dashboard)
-            window.location.href = '/dashboard';
+            // Redirect to the original requested page or dashboard
+            navigate(from, { replace: true });
         } catch (error) {
+            // You can enhance error handling by checking error.response.status or other properties
             setErrorMessage('Invalid email or password');
         }
     };

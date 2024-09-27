@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService{
         return BankResponse.builder()
                 .responseCode("200")  // Use HTTP 200-like code for successful login
                 .responseMessage("Login Success")
-                .responseMessage(jwtTokenProvider.generateToken(authentication))  // Send JWT token
+                .token(jwtTokenProvider.generateToken(authentication))
                 .build();
     }
 
