@@ -43,9 +43,9 @@
 
 /* Input fields focus state */
 .signup-container input:focus {
-    border-color: #80bdff;
+    border-color: #00c805; /* Robinhood green for focus */
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 5px rgba(0, 200, 5, 0.25); /* Robinhood green glow */
 }
 
 /* Submit button */
@@ -53,7 +53,7 @@
     width: 100%;
     padding: 12px;
     font-size: 1.1rem;
-    background-color: #007bff;
+    background-color: #00c805; /* Robinhood green for the button */
     color: white;
     border: none;
     border-radius: 4px;
@@ -63,12 +63,12 @@
 
 /* Button hover effect */
 .signup-container button:hover {
-    background-color: #0056b3;
+    background-color: #009f04; /* Darker green on hover */
 }
 
 /* Success and error messages */
 .success {
-    color: #28a745; /* Green text for success */
+    color: #00c805; /* Robinhood green for success */
     background-color: #d4edda;
     padding: 10px;
     border-radius: 4px;
@@ -85,4 +85,9 @@
     margin-bottom: 15px;
     border: 1px solid #f5c6cb;
     text-align: center;
+}
+
+/* Apply the font style across the signup container */
+.signup-container {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
 }
