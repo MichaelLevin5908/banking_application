@@ -77,11 +77,32 @@
     text-align: center;
 }
 
+/* Apply SVG background with gradient overlay */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: 
+        linear-gradient(90deg, rgba(255, 95, 109, 0.6), rgba(230, 123, 16, 0.6), rgba(55, 181, 255, 0.6), rgba(74, 0, 224, 0.6), rgba(28, 221, 160, 0.6)),
+        url('images/signin-bg.svg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Helvetica Neue', Arial, sans-serif; /* Matches Stripe's font style */
+}
+
+
+
+
 /* Link to sign-up page */
 .signin-container p {
     text-align: center;
     margin-top: 15px;
 }
+
+/* Apply the font style across the sign-in container */
+.signin-container {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
 
 .signin-container p a {
     color: #007bff;
