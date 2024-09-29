@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.security.Key;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -51,16 +53,17 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
-        try{
+        try {
             Jwts.parser()
                     .setSigningKey(key())
                     .build()
-                    .parse(token);
+                    .parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException | MalformedJwtException | SecurityException | IllegalArgumentException e) {
+            // Log the exception
+            log.error("Invalid JWT token: {}", e.getMessage());
+            return false;
         }
-        catch (ExpiredJwtException | MalformedJwtException | SecurityException | IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        }
-
     }
+
 }
