@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // Named import
+import { jwtDecode } from "jwt-decode";
 
 const isAuthenticated = () => {
     const token = localStorage.getItem('token');
