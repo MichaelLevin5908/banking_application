@@ -1,5 +1,6 @@
+// src/components/SignIn.js
 import React, { useState } from 'react';
-import axios from '../services/api'; // Ensure this is your centralized Axios instance
+import api from '../services/api'; // Use consistent import name
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../Style/signin.css';
 import bankingLogo from '../Style/images/bankingapp.png';
@@ -17,22 +18,40 @@ const SignIn = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('/user/login', {
+            const response = await api.post('/user/login', {
                 email,
                 password
             });
 
-            if (response.data && response.data.token) {
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('accountNumber', response.data.accountNumber)
-            } else {
-                setErrorMessage('Authentication token not provided by server.');
-                return;
-            }
+            console.log('Login Response:', response.data); // Debugging line
 
-            navigate(from, { replace: true });
+            if (response.data && response.data.token && response.data.accountInfo) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('accountNumber', response.data.accountInfo.accountNumber);
+                // Optionally, store other accountInfo details
+                // localStorage.setItem('accountName', response.data.accountInfo.accountName);
+                // localStorage.setItem('accountBalance', response.data.accountInfo.accountBalance);
+
+                navigate(from, { replace: true });
+            } else {
+                setErrorMessage('Authentication token or account information not provided by server.');
+            }
         } catch (error) {
-            setErrorMessage('Invalid email or password');
+            console.error('Login error:', error);
+
+            if (error.response) {
+                if (error.response.status === 404) {
+                    setErrorMessage('Account does not exist. Please sign up first.');
+                } else if (error.response.status === 401) {
+                    setErrorMessage('Invalid email or password.');
+                } else {
+                    setErrorMessage('An error occurred. Please try again.');
+                }
+            } else if (error.request) {
+                setErrorMessage('No response from server. Please try again later.');
+            } else {
+                setErrorMessage('An error occurred. Please try again.');
+            }
         }
     };
 
@@ -70,5 +89,3 @@ const SignIn = () => {
 };
 
 export default SignIn;
-
-
