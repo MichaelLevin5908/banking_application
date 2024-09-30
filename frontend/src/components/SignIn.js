@@ -24,6 +24,7 @@ const SignIn = () => {
 
             if (response.data && response.data.token) {
                 localStorage.setItem('token', response.data.token);
+                localStorage.setItem('accountNumber', response.data.accountNumber)
             } else {
                 setErrorMessage('Authentication token not provided by server.');
                 return;
