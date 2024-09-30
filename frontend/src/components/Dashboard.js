@@ -39,10 +39,19 @@ export default class Dashboard extends Component {
             );
 
             console.log('Balance Response:', response.data);
-            this.setState({
-                accountBalance: parseFloat(response.data.accountInfo.accountBalance),
-                loading: false,
-            });
+
+            // Correctly access accountInfo.accountBalance
+            if (response.data.accountInfo && response.data.accountInfo.accountBalance) {
+                this.setState({
+                    accountBalance: parseFloat(response.data.accountInfo.accountBalance),
+                    loading: false,
+                });
+            } else {
+                this.setState({
+                    errorMessage: 'Account information is missing in the response.',
+                    loading: false,
+                });
+            }
         } catch (error) {
             console.error('Error fetching balance:', error);
 

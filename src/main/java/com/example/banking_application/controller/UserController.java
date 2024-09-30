@@ -45,7 +45,7 @@ public class UserController {
             description = "Http status 200 CREATED"
     )
 
-    @GetMapping("balanceEnquiry")
+    @PostMapping("balanceEnquiry")
     public BankResponse balanceEnquiry(@RequestBody EnquiryRequest request){
         return userService.balanceEnquiry(request);
     }
