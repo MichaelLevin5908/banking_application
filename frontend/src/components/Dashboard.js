@@ -1,34 +1,64 @@
+// src/components/Dashboard.js
 import React, { Component } from 'react';
-import axios from 'axios';
+import api from '../services/api'; // Axios instance with interceptors
 import '../Style/dashboard.css';
 
 export default class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            accountBalance: null,   // Similar to useState(null)
-            errorMessage: '',       // Similar to useState('')
+            accountBalance: null,
+            errorMessage: '',
+            loading: true, // Track loading state
         };
     }
 
-    // Lifecycle method to handle data fetching when the component mounts
     componentDidMount() {
         this.fetchBalance();
     }
 
     fetchBalance = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/user/balanceEnquiry', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+        const accountNumber = localStorage.getItem('accountNumber');
 
-            // Update the account balance in the state
-            this.setState({ accountBalance: parseFloat(response.data.accountBalance) });
+        console.log('Fetching balance for Account Number:', accountNumber);
+
+        if (!accountNumber) {
+            this.setState({ errorMessage: 'Account number not found.', loading: false });
+            return;
+        }
+
+        try {
+            const response = await api.post(
+                '/user/balanceEnquiry',
+                { accountNumber },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            console.log('Balance Response:', response.data);
+            this.setState({
+                accountBalance: parseFloat(response.data.accountInfo.accountBalance),
+                loading: false,
+            });
         } catch (error) {
-            // Update the error message in case of an error
-            this.setState({ errorMessage: 'Failed to fetch account balance.' });
+            console.error('Error fetching balance:', error);
+
+            let message = 'Failed to fetch account balance.';
+            if (error.response) {
+                // Server responded with a status other than 2xx
+                message += ` ${error.response.status}: ${error.response.data.message || error.response.statusText}`;
+            } else if (error.request) {
+                // Request was made but no response received
+                message += ' No response from server.';
+            } else {
+                // Something happened in setting up the request
+                message += ` ${error.message}`;
+            }
+
+            this.setState({ errorMessage: message, loading: false });
         }
     };
 
@@ -40,7 +70,7 @@ export default class Dashboard extends Component {
     };
 
     render() {
-        const { accountBalance, errorMessage } = this.state;
+        const { accountBalance, errorMessage, loading } = this.state;
 
         return (
             <div className="container mt-5">
@@ -48,15 +78,16 @@ export default class Dashboard extends Component {
                 <p>Only authenticated users can see this page.</p>
 
                 {/* Display account balance */}
-                {accountBalance !== null ? (
+                {loading ? (
+                    <div className="alert alert-warning">Fetching account balance...</div>
+                ) : accountBalance !== null ? (
                     <div className="alert alert-info">
                         <h4>Your Current Account Balance:</h4>
                         <p>{this.formatBalance(accountBalance)}</p>
                     </div>
-                ) : (
-                    <div className="alert alert-warning">Fetching account balance...</div>
-                )}
+                ) : null}
 
+                {/* Display error message */}
                 {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
                 <hr />

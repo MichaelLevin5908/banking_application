@@ -7,10 +7,12 @@ import com.example.banking_application.repository.Role;
 import com.example.banking_application.repository.UserRepository;
 import com.example.banking_application.utils.AccountUtils;
 import lombok.AllArgsConstructor;
+import org.springdoc.core.service.RequestBodyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,8 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private RequestBodyService requestBodyBuilder;
 
     public UserServiceImpl() {}
 
@@ -100,11 +104,19 @@ public class UserServiceImpl implements UserService{
                 .build();
         emailService.sendEmail(loginAlert);
 
+        User user = userRepository.findByEmail(loginDto.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         // Return response with JWT token
         return BankResponse.builder()
                 .responseCode("200")  // Use HTTP 200-like code for successful login
                 .responseMessage("Login Success")
                 .token(jwtTokenProvider.generateToken(authentication))
+                .accountInfo(AccountInfo.builder()
+                        .accountBalance(user.getAccountBalance())
+                        .accountNumber(user.getAccountNumber())
+                        .accountName(user.getFirstName() + " " + user.getLastName() + " " + user.getOtherName())
+                        .build())
                 .build();
     }
 
