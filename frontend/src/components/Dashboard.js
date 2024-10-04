@@ -20,8 +20,6 @@ export default class Dashboard extends Component {
     fetchBalance = async () => {
         const accountNumber = localStorage.getItem('accountNumber');
 
-        console.log('Fetching balance for Account Number:', accountNumber);
-
         if (!accountNumber) {
             this.setState({ errorMessage: 'Account number not found.', loading: false });
             return;
@@ -38,10 +36,7 @@ export default class Dashboard extends Component {
                 }
             );
 
-            console.log('Balance Response:', response.data);
-
-            // Correctly access accountInfo.accountBalance
-            if (response.data.accountInfo && response.data.accountInfo.accountBalance) {
+            if (response.data.accountInfo && response.data.accountInfo.accountBalance !== undefined) {
                 this.setState({
                     accountBalance: parseFloat(response.data.accountInfo.accountBalance),
                     loading: false,
@@ -53,20 +48,14 @@ export default class Dashboard extends Component {
                 });
             }
         } catch (error) {
-            console.error('Error fetching balance:', error);
-
             let message = 'Failed to fetch account balance.';
             if (error.response) {
-                // Server responded with a status other than 2xx
                 message += ` ${error.response.status}: ${error.response.data.message || error.response.statusText}`;
             } else if (error.request) {
-                // Request was made but no response received
                 message += ' No response from server.';
             } else {
-                // Something happened in setting up the request
                 message += ` ${error.message}`;
             }
-
             this.setState({ errorMessage: message, loading: false });
         }
     };
