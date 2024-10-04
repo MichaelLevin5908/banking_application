@@ -1,10 +1,10 @@
 // src/components/Dashboard.js
 import React, { Component } from 'react';
 import api from '../services/api'; // Axios instance with interceptors
-import '../Style/dashboard.css';
 import CreditDebit from './CreditDebit';
 import Transfer from './Transfer';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../Style/dashboard.css';
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -85,31 +85,31 @@ export default class Dashboard extends Component {
                 <h1>Welcome to your Dashboard!</h1>
                 <p>Only authenticated users can see this page.</p>
 
-                // Navigation Buttons
-                <div className="btn-group mb-3" role="group">
+                {/* Navigation Buttons */}
+                {/* Navigation Buttons */}
+                <div className="mb-3 text-center">
                     <button
                         type="button"
-                        className={`btn btn-primary ${currentView === 'balance' ? 'active' : ''}`}
+                        className={`btn btn-primary m-1 ${currentView === 'balance' ? 'active' : ''}`}
                         onClick={() => this.setView('balance')}
                     >
                         Balance
                     </button>
                     <button
                         type="button"
-                        className={`btn btn-primary ${currentView === 'creditDebit' ? 'active' : ''}`}
+                        className={`btn btn-primary m-1 ${currentView === 'creditDebit' ? 'active' : ''}`}
                         onClick={() => this.setView('creditDebit')}
                     >
                         Credit/Debit
                     </button>
                     <button
                         type="button"
-                        className={`btn btn-primary ${currentView === 'transfer' ? 'active' : ''}`}
+                        className={`btn btn-primary m-1 ${currentView === 'transfer' ? 'active' : ''}`}
                         onClick={() => this.setView('transfer')}
                     >
                         Transfer
                     </button>
                 </div>
-
 
                 {/* Display account balance */}
                 {currentView === 'balance' && (
