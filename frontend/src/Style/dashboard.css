@@ -61,3 +61,25 @@ p {
     font-size: 1.2rem;
     font-weight: bold;
 }
+
+/* Navigation Buttons */
+.btn-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-group .btn {
+    min-width: 120px;
+    margin: 0 5px;
+}
+
+.btn-group .btn.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-group .btn:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
