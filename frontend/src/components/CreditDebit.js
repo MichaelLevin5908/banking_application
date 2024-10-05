@@ -137,6 +137,19 @@ export default class CreditDebit extends Component {
                 <h2>Email Bank Statement</h2>
                 <Form onSubmit={this.generateStatement}>
                     <div className="form-group">
+                        <label htmlFor="accountNumber">Account Number</label>
+                        <input
+                            type="text"
+                            name="accountNumber"
+                            value={accountNumber}
+                            onChange={this.handleChange}
+                            className="form-control"
+                            placeholder="Enter Account Number"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
                         <label htmlFor="startDate">Start Date</label>
                         <input
                             type="date"
