@@ -33,11 +33,11 @@ export default class CreditDebit extends Component {
         }
 
         try {
-            await api.post(
-                `/${transactionType}`,
+            const response = await api.post(
+                `/user/${transactionType}`,
                 { accountNumber, amount: parseFloat(amount) }
             );
-            this.showSuccess(`${transactionType.toUpperCase()} successful!`);
+            this.showSuccess(response.data.responseMessage || `${transactionType.toUpperCase()} successful!`);
         } catch (error) {
             this.handleError(error);
         }
