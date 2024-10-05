@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';  // Importing Form from react-bootstrap
-import axios from 'axios';
+import api from '../services/api';       // Import your custom Axios instance
+import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap CSS is imported
 
 export default class CreditDebit extends Component {
     constructor(props) {
@@ -33,22 +34,21 @@ export default class CreditDebit extends Component {
         const { accountNumber, amount, transactionType } = this.state;
 
         try {
-            await axios.post(
-                `http://localhost:8080/api/transactions/${transactionType}`,
+            await api.post(
+                `/transactions/${transactionType}`,
                 {
                     accountNumber,
                     amount: parseFloat(amount),
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
                 }
             );
 
             this.setState({ resultMessage: `${transactionType.toUpperCase()} successful!`, amount: '' });
         } catch (error) {
-            this.setState({ errorMessage: 'Transaction failed. Please try again.' });
+            let message = 'Transaction failed. Please try again.';
+            if (error.response && error.response.data && error.response.data.responseMessage) {
+                message = error.response.data.responseMessage;
+            }
+            this.setState({ errorMessage: message });
         }
     }
 
@@ -64,14 +64,11 @@ export default class CreditDebit extends Component {
         }
 
         try {
-            const response = await axios.get(`http://localhost:8080/api/transactions/bankstatement`, {
+            const response = await api.get(`/transactions/bankstatement`, {
                 params: {
                     accountNumber,
                     startDate,
                     endDate,
-                },
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 responseType: 'blob',
             });
@@ -84,7 +81,11 @@ export default class CreditDebit extends Component {
             document.body.appendChild(link);
             link.click();
         } catch (error) {
-            this.setState({ errorMessage: 'Failed to generate bank statement. Please try again.' });
+            let message = 'Failed to generate bank statement. Please try again.';
+            if (error.response && error.response.data && error.response.data.responseMessage) {
+                message = error.response.data.responseMessage;
+            }
+            this.setState({ errorMessage: message });
         }
     }
 
@@ -94,7 +95,7 @@ export default class CreditDebit extends Component {
         return (
             <div className="border border-dark bg-dark text-white mt-5">
                 <h2 className="text-center">Credit / Debit Account</h2>
-                <Form onSubmit={this.handleSubmit}>  {/* Form is used here */}
+                <Form onSubmit={this.handleSubmit}>
                     <div>
                         {resultMessage && <div className="alert alert-success text-center">{resultMessage}</div>}
                         {errorMessage && <div className="alert alert-danger text-center">{errorMessage}</div>}
@@ -146,7 +147,7 @@ export default class CreditDebit extends Component {
                 <hr className="my-4" />
 
                 <h2 className="text-center">Generate Bank Statement</h2>
-                <Form onSubmit={this.generateStatement}>  {/* Form is used here */}
+                <Form onSubmit={this.generateStatement}>
                     <div>
                         <div className="mb-3">
                             <label htmlFor="startDate">Start Date</label>
