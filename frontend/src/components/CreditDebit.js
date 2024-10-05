@@ -64,7 +64,7 @@ export default class CreditDebit extends Component {
         }
 
         try {
-            const response = await api.get(`/transactions/generateBankStatement`, {
+            const response = await api.get(`/transactions/bankStatement`, {
                 params: {
                     accountNumber,
                     startDate,
