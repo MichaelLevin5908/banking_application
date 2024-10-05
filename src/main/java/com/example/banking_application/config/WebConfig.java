@@ -14,11 +14,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("Authorization", "Cache-Control", "Content-Type")  // Specify allowed headers
                 .exposedHeaders("Authorization")  // Expose headers to the client
                 .allowCredentials(true);
-        registry.addMapping("/bankStatement/**")
-                .allowedOriginPatterns("http://localhost:3000")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("Authorization", "Cache-Control", "Content-Type")
-                .exposedHeaders("Authorization")
-                .allowCredentials(true);
     }
 }
