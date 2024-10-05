@@ -33,17 +33,16 @@ export default class CreditDebit extends Component {
         }
 
         try {
-            const response = await api.post(
-                `/user/${transactionType}`,
+            await api.post(
+                `/${transactionType}`,
                 { accountNumber, amount: parseFloat(amount) }
             );
-            this.showSuccess(response.data.responseMessage || `${transactionType.toUpperCase()} successful!`);
+            this.showSuccess(`${transactionType.toUpperCase()} successful!`);
         } catch (error) {
             this.handleError(error);
         }
     }
 
-    // Generate a bank statement
     generateStatement = async (event) => {
         event.preventDefault();
         const { accountNumber, startDate, endDate } = this.state;
@@ -53,11 +52,10 @@ export default class CreditDebit extends Component {
         }
 
         try {
-            const response = await api.get(`/api/user/bankStatement`, {
+            const response = await api.get(`/bankStatement`, {
                 params: { accountNumber, startDate, endDate },
-                responseType: 'blob',
             });
-            this.downloadBlob(response.data, 'BankStatement.pdf');
+            this.showSuccess(response.data); // Use the message returned from the backend
         } catch (error) {
             this.handleError(error);
         }
@@ -65,9 +63,9 @@ export default class CreditDebit extends Component {
 
     // Function to handle errors
     handleError = (error) => {
-        let message = 'Transaction failed. Please try again.';
-        if (error.response && error.response.data && error.response.data.responseMessage) {
-            message = error.response.data.responseMessage;
+        let message = 'An error occurred. Please try again.';
+        if (error.response && error.response.data) {
+            message = error.response.data;
         }
         this.showError(message);
     }
@@ -79,17 +77,7 @@ export default class CreditDebit extends Component {
 
     // Display success message
     showSuccess = (message) => {
-        this.setState({ resultMessage: message, errorMessage: '', amount: '' });
-    }
-
-    // Utility to download the response blob
-    downloadBlob = (data, filename) => {
-        const url = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
+        this.setState({ resultMessage: message, errorMessage: '' });
     }
 
     render() {
@@ -146,21 +134,8 @@ export default class CreditDebit extends Component {
 
                 <hr />
 
-                <h2>Generate Bank Statement</h2>
+                <h2>Email Bank Statement</h2>
                 <Form onSubmit={this.generateStatement}>
-                    <div className="form-group">
-                        <label htmlFor="accountNumber">Account Number</label>
-                        <input
-                            type="text"
-                            name="accountNumber"
-                            value={accountNumber}
-                            onChange={this.handleChange}
-                            className="form-control"
-                            placeholder="Enter Account Number"
-                            required
-                        />
-                    </div>
-
                     <div className="form-group">
                         <label htmlFor="startDate">Start Date</label>
                         <input
