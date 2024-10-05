@@ -35,7 +35,7 @@ export default class CreditDebit extends Component {
 
         try {
             await api.post(
-                `/transactions/${transactionType}`,
+                `/${transactionType}`,
                 {
                     accountNumber,
                     amount: parseFloat(amount),
@@ -64,7 +64,7 @@ export default class CreditDebit extends Component {
         }
 
         try {
-            const response = await api.get(`/transactions/bankstatement`, {
+            const response = await api.get(`/transactions/generateBankStatement`, {
                 params: {
                     accountNumber,
                     startDate,
