@@ -33,11 +33,11 @@ export default class CreditDebit extends Component {
         }
 
         try {
-            await api.post(
-                `/${transactionType}`,
+            const response = await api.post(
+                `/user/${transactionType}`,
                 { accountNumber, amount: parseFloat(amount) }
             );
-            this.showSuccess(`${transactionType.toUpperCase()} successful!`);
+            this.showSuccess(response.data.responseMessage || `${transactionType.toUpperCase()} successful!`);
         } catch (error) {
             this.handleError(error);
         }
@@ -53,7 +53,7 @@ export default class CreditDebit extends Component {
         }
 
         try {
-            const response = await api.get(`/transactions/bankStatement`, {
+            const response = await api.get(`/api/user/bankStatement`, {
                 params: { accountNumber, startDate, endDate },
                 responseType: 'blob',
             });
@@ -74,12 +74,12 @@ export default class CreditDebit extends Component {
 
     // Display error message
     showError = (message) => {
-        this.setState({ errorMessage: message });
+        this.setState({ errorMessage: message, resultMessage: '' });
     }
 
     // Display success message
     showSuccess = (message) => {
-        this.setState({ resultMessage: message, amount: '' });
+        this.setState({ resultMessage: message, errorMessage: '', amount: '' });
     }
 
     // Utility to download the response blob
@@ -148,6 +148,19 @@ export default class CreditDebit extends Component {
 
                 <h2>Generate Bank Statement</h2>
                 <Form onSubmit={this.generateStatement}>
+                    <div className="form-group">
+                        <label htmlFor="accountNumber">Account Number</label>
+                        <input
+                            type="text"
+                            name="accountNumber"
+                            value={accountNumber}
+                            onChange={this.handleChange}
+                            className="form-control"
+                            placeholder="Enter Account Number"
+                            required
+                        />
+                    </div>
+
                     <div className="form-group">
                         <label htmlFor="startDate">Start Date</label>
                         <input
