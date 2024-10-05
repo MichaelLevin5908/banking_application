@@ -83,17 +83,18 @@ export default class Dashboard extends Component {
         const { accountBalance, errorMessage, loading, currentView, accountNumber } = this.state;
 
         return (
-            <div className="container mt-5">
-                <div className="text-center mb-4">
-                    <h1 className="mb-3">Welcome to Your Dashboard!</h1>
-                    <p className="text-muted">Manage your account efficiently and securely.</p>
+            <div className="container dashboard-container">
+                {/* Header Section */}
+                <div className="text-center mb-5">
+                    <h1 className="display-4">Your Dashboard</h1>
+                    <p className="lead text-muted">Manage your account efficiently and securely.</p>
                 </div>
 
                 {/* Navigation Buttons */}
-                <div className="mb-4 text-center">
+                <div className="d-flex justify-content-center mb-4">
                     <button
                         type="button"
-                        className={`btn btn-outline-primary m-1 ${currentView === 'balance' ? 'active' : ''}`}
+                        className={`btn btn-outline-primary m-2 ${currentView === 'balance' ? 'active' : ''}`}
                         onClick={() => this.setView('balance')}
                     >
                         <FaBalanceScale className="me-2" />
@@ -101,7 +102,7 @@ export default class Dashboard extends Component {
                     </button>
                     <button
                         type="button"
-                        className={`btn btn-outline-primary m-1 ${currentView === 'creditDebit' ? 'active' : ''}`}
+                        className={`btn btn-outline-primary m-2 ${currentView === 'creditDebit' ? 'active' : ''}`}
                         onClick={() => this.setView('creditDebit')}
                     >
                         <FaMoneyBillWave className="me-2" />
@@ -109,7 +110,7 @@ export default class Dashboard extends Component {
                     </button>
                     <button
                         type="button"
-                        className={`btn btn-outline-primary m-1 ${currentView === 'transfer' ? 'active' : ''}`}
+                        className={`btn btn-outline-primary m-2 ${currentView === 'transfer' ? 'active' : ''}`}
                         onClick={() => this.setView('transfer')}
                     >
                         <FaExchangeAlt className="me-2" />
@@ -117,53 +118,60 @@ export default class Dashboard extends Component {
                     </button>
                 </div>
 
-                {/* Display account balance and account number */}
-                {currentView === 'balance' && (
-                    <div className="row justify-content-center">
-                        <div className="col-md-6">
-                            <div className="card shadow-sm">
-                                <div className="card-body">
-                                    <h5 className="card-title text-center">Account Details</h5>
-                                    {loading ? (
-                                        <div className="alert alert-warning text-center">Fetching account balance...</div>
-                                    ) : accountBalance !== null ? (
-                                        <>
-                                            <p className="card-text">
-                                                <strong>Account Number:</strong> {accountNumber}
-                                            </p>
-                                            <p className="card-text">
-                                                <strong>Current Balance:</strong> {this.formatBalance(accountBalance)}
-                                            </p>
-                                        </>
-                                    ) : null}
+                {/* Content Section */}
+                <div className="content-section">
+                    {/* Display account balance and account number */}
+                    {currentView === 'balance' && (
+                        <div className="row justify-content-center">
+                            <div className="col-lg-6 col-md-8">
+                                <div className="card shadow-sm">
+                                    <div className="card-body">
+                                        <h5 className="card-title text-center mb-4">Account Details</h5>
+                                        {loading ? (
+                                            <div className="alert alert-warning text-center">Fetching account balance...</div>
+                                        ) : accountBalance !== null ? (
+                                            <>
+                                                <p className="card-text">
+                                                    <strong>Account Number:</strong> {accountNumber}
+                                                </p>
+                                                <p className="card-text">
+                                                    <strong>Current Balance:</strong> {this.formatBalance(accountBalance)}
+                                                </p>
+                                            </>
+                                        ) : null}
 
-                                    {/* Display error message */}
-                                    {errorMessage && <div className="alert alert-danger mt-3 text-center">{errorMessage}</div>}
+                                        {/* Display error message */}
+                                        {errorMessage && <div className="alert alert-danger mt-3 text-center">{errorMessage}</div>}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {/* Render CreditDebit Component */}
-                {currentView === 'creditDebit' && (
-                    <div className="row justify-content-center">
-                        <div className="col-md-8">
-                            <CreditDebit accountNumber={accountNumber} />
+                    {/* Render CreditDebit Component */}
+                    {currentView === 'creditDebit' && (
+                        <div className="row justify-content-center">
+                            <div className="col-lg-8 col-md-10">
+                                <CreditDebit accountNumber={accountNumber} />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {/* Render Transfer Component */}
-                {currentView === 'transfer' && (
-                    <div className="row justify-content-center">
-                        <div className="col-md-8">
-                            <Transfer sourceAccountNumber={accountNumber} />
+                    {/* Render Transfer Component */}
+                    {currentView === 'transfer' && (
+                        <div className="row justify-content-center">
+                            <div className="col-lg-8 col-md-10">
+                                <Transfer sourceAccountNumber={accountNumber} />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
 
-                <hr className="my-5" />
+                {/* Footer */}
+                <footer className="text-center mt-5">
+                    <hr />
+                    <p className="text-muted">&copy; {new Date().getFullYear()} PeerPay. All rights reserved.</p>
+                </footer>
             </div>
         );
     }
