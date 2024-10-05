@@ -14,7 +14,7 @@ const Transfer = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:8080/api/transfer`,
+                `http://localhost:8080/api/user/transfer`,
                 {
                     sourceAccountNumber,
                     destinationAccountNumber,
