@@ -5,6 +5,7 @@ import CreditDebit from './CreditDebit';
 import Transfer from './Transfer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Style/dashboard.css';
+import { FaMoneyBillWave, FaExchangeAlt, FaBalanceScale } from 'react-icons/fa'; // Importing icons for better visuals
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -14,6 +15,7 @@ export default class Dashboard extends Component {
             errorMessage: '',
             loading: true, // Track loading state
             currentView: 'balance', // New state to track the current view
+            accountNumber: localStorage.getItem('accountNumber') || '', // Store account number in state
         };
     }
 
@@ -22,7 +24,7 @@ export default class Dashboard extends Component {
     }
 
     fetchBalance = async () => {
-        const accountNumber = localStorage.getItem('accountNumber');
+        const { accountNumber } = this.state;
 
         if (!accountNumber) {
             this.setState({ errorMessage: 'Account number not found.', loading: false });
@@ -78,67 +80,90 @@ export default class Dashboard extends Component {
     };
 
     render() {
-        const { accountBalance, errorMessage, loading, currentView } = this.state;
+        const { accountBalance, errorMessage, loading, currentView, accountNumber } = this.state;
 
         return (
             <div className="container mt-5">
-                <h1>Welcome to your Dashboard!</h1>
-                <p>Only authenticated users can see this page.</p>
+                <div className="text-center mb-4">
+                    <h1 className="mb-3">Welcome to Your Dashboard!</h1>
+                    <p className="text-muted">Manage your account efficiently and securely.</p>
+                </div>
 
                 {/* Navigation Buttons */}
-                {/* Navigation Buttons */}
-                <div className="mb-3 text-center">
+                <div className="mb-4 text-center">
                     <button
                         type="button"
-                        className={`btn btn-primary m-1 ${currentView === 'balance' ? 'active' : ''}`}
+                        className={`btn btn-outline-primary m-1 ${currentView === 'balance' ? 'active' : ''}`}
                         onClick={() => this.setView('balance')}
                     >
+                        <FaBalanceScale className="me-2" />
                         Balance
                     </button>
                     <button
                         type="button"
-                        className={`btn btn-primary m-1 ${currentView === 'creditDebit' ? 'active' : ''}`}
+                        className={`btn btn-outline-primary m-1 ${currentView === 'creditDebit' ? 'active' : ''}`}
                         onClick={() => this.setView('creditDebit')}
                     >
+                        <FaMoneyBillWave className="me-2" />
                         Credit/Debit
                     </button>
                     <button
                         type="button"
-                        className={`btn btn-primary m-1 ${currentView === 'transfer' ? 'active' : ''}`}
+                        className={`btn btn-outline-primary m-1 ${currentView === 'transfer' ? 'active' : ''}`}
                         onClick={() => this.setView('transfer')}
                     >
+                        <FaExchangeAlt className="me-2" />
                         Transfer
                     </button>
                 </div>
 
-                {/* Display account balance */}
+                {/* Display account balance and account number */}
                 {currentView === 'balance' && (
-                    <>
-                        {loading ? (
-                            <div className="alert alert-warning">Fetching account balance...</div>
-                        ) : accountBalance !== null ? (
-                            <div className="alert alert-info">
-                                <h4>Your Current Account Balance:</h4>
-                                <p>{this.formatBalance(accountBalance)}</p>
-                            </div>
-                        ) : null}
+                    <div className="row justify-content-center">
+                        <div className="col-md-6">
+                            <div className="card shadow-sm">
+                                <div className="card-body">
+                                    <h5 className="card-title text-center">Account Details</h5>
+                                    {loading ? (
+                                        <div className="alert alert-warning text-center">Fetching account balance...</div>
+                                    ) : accountBalance !== null ? (
+                                        <>
+                                            <p className="card-text">
+                                                <strong>Account Number:</strong> {accountNumber}
+                                            </p>
+                                            <p className="card-text">
+                                                <strong>Current Balance:</strong> {this.formatBalance(accountBalance)}
+                                            </p>
+                                        </>
+                                    ) : null}
 
-                        {/* Display error message */}
-                        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-                    </>
+                                    {/* Display error message */}
+                                    {errorMessage && <div className="alert alert-danger mt-3 text-center">{errorMessage}</div>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 )}
 
                 {/* Render CreditDebit Component */}
                 {currentView === 'creditDebit' && (
-                    <CreditDebit accountNumber={localStorage.getItem('accountNumber')} />
+                    <div className="row justify-content-center">
+                        <div className="col-md-8">
+                            <CreditDebit accountNumber={accountNumber} />
+                        </div>
+                    </div>
                 )}
 
                 {/* Render Transfer Component */}
                 {currentView === 'transfer' && (
-                    <Transfer sourceAccountNumber={localStorage.getItem('accountNumber')} />
+                    <div className="row justify-content-center">
+                        <div className="col-md-8">
+                            <Transfer sourceAccountNumber={accountNumber} />
+                        </div>
+                    </div>
                 )}
 
-                <hr />
+                <hr className="my-5" />
             </div>
         );
     }
