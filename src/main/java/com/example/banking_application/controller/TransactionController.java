@@ -3,10 +3,7 @@ package com.example.banking_application.controller;
 
 import com.example.banking_application.entity.Transaction;
 import com.example.banking_application.service.bankStatement;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
