@@ -4,7 +4,7 @@ package com.example.banking_application.service;
 import com.example.banking_application.dto.EmailDetails;
 import com.example.banking_application.entity.Transaction;
 import com.example.banking_application.entity.User;
-import com.example.banking_application.repository.TransactionRespository;
+import com.example.banking_application.repository.TransactionRepository;
 import com.example.banking_application.repository.UserRepository;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Slf4j
 public class bankStatement {
-    private TransactionRespository transactionRespository;
+    private TransactionRepository transactionRepository;
     private UserRepository userRepository;
     private EmailService emailService;
 
@@ -38,7 +38,7 @@ public class bankStatement {
         LocalDate currentDate = LocalDate.now();
 
         // Filter transactions by account number and date range
-        List<Transaction> transactionList = transactionRespository.findAll().stream()
+        List<Transaction> transactionList = transactionRepository.findAll().stream()
                 .filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
                 .filter(transaction -> !transaction.getCreatedAt().isBefore(start) && !transaction.getCreatedAt().isAfter(end))
                 .collect(Collectors.toList());
