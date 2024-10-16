@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../Style/transfer.css'; // Ensure you import the CSS file
-import { Spinner } from 'react-bootstrap'; // Optional: Using Bootstrap's Spinner
+import { Spinner } from 'react-bootstrap';
+import api from "../services/api"; // Optional: Using Bootstrap's Spinner
 
 const Transfer = () => {
     const [sourceAccountNumber, setSourceAccountNumber] = useState('');
@@ -39,8 +40,8 @@ const Transfer = () => {
         setIsLoading(true); // Start loading
 
         try {
-            const response = await axios.post(
-                `http://localhost:8080/api/user/transfer`,
+            const response = await  api.post(
+                `/user/transfer`,
                 {
                     sourceAccountNumber,
                     destinationAccountNumber,
