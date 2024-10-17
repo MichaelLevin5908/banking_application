@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class bankStatement {
+public class BankStatement {
     private TransactionRepository transactionRepository;
     private UserRepository userRepository;
     private EmailService emailService;
