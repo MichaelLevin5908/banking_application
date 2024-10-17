@@ -2,7 +2,7 @@ package com.example.banking_application.service;
 
 import com.example.banking_application.dto.TransactionDto;
 import com.example.banking_application.entity.Transaction;
-import com.example.banking_application.repository.TransactionRespository;
+import com.example.banking_application.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class TransacationImpl implements TransactionService{
 
     @Autowired
-    TransactionRespository transactionRespository;
+    TransactionRepository transactionRepository;
 
     @Override
     public void saveTransaction(TransactionDto transactionDto) {
@@ -20,7 +20,7 @@ public class TransacationImpl implements TransactionService{
                 .amount(transactionDto.getAmount())
                 .status("SUCCESS")
                 .build();
-        transactionRespository.save(transaction);
+        transactionRepository.save(transaction);
         System.out.println(transaction);
     }
 }
